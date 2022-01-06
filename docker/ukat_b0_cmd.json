@@ -1,0 +1,70 @@
+{
+    "name": "ukat_b0", 
+    "command-line": "python ukat_b0.py /input /output [METHOD]",
+    "image": "martincraig/ukat", 
+    "label": "ukat_b0",
+    "version": "0.0.1", 
+    "schema-version": "1.0", 
+    "info-url": "", 
+    "type": "docker", 
+    "description": "Runs UKAT B0 mapping",
+    "inputs": [
+    ], 
+    "outputs": [
+        {
+            "mount": "ukat-out", 
+            "required": "true", 
+            "name": "b0", 
+            "description": "B0 maps"
+        }
+    ],
+    "mounts": [
+        {
+            "writable": "false", 
+            "path": "/input", 
+            "name": "nifti-in"
+        },
+        {
+            "writable": "true", 
+            "path": "/output", 
+            "name": "ukat-out"
+        }
+    ], 
+    "xnat": [
+        {
+            "derived-inputs": [
+                {
+                    "name": "scan-niftis", 
+                    "matcher": "@.label == 'NIFTI'", 
+                    "provides-files-for-command-mount": "nifti-in", 
+                    "derived-from-wrapper-input": "scan", 
+                    "type": "Resource", 
+                    "description": "The nifti resource on the scan"
+                }
+            ], 
+            "contexts": ["xnat:imageScanData"], 
+            "description": "Run UKAT B0 mapping", 
+            "label": "ukat_b0", 
+            "output-handlers": [
+                {
+                    "accepts-command-output": "b0", 
+                    "label": "B0", 
+                    "type": "Resource", 
+                    "name": "b0-resource", 
+                    "as-a-child-of-wrapper-input": "scan"
+                }
+            ], 
+            "external-inputs": [
+                {
+                    "matcher": "'NIFTI' in @.resources[*].label", 
+                    "required": true, 
+                    "type": "Scan", 
+                    "name": "scan", 
+                    "description": "Input scan"
+                }
+            ], 
+            "name": "ukat_b0-scan"
+        }
+    ]
+}
+
