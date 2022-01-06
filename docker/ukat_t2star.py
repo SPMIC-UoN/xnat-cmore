@@ -65,7 +65,7 @@ for fname in os.listdir(indir):
                 print("WARNING: Image %s has no EchoTime defined in metadata - ignoring" % fname)
             elif not phase_info_in_fname and "PHASE" in metadata.get("ImageType", []):
                 print("INFO: Image %s is not magnitude - ignoring" % fname)
-            elif phase_info_in_fname and not is_mag_fname(base_fname):
+            elif phase_info_in_fname and base_fname.endswith("_ph"):
                 print("INFO: Image %s is not magnitude - ignoring" % fname)
             else:
                 print("Processing %s" % fname)

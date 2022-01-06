@@ -68,10 +68,14 @@ for fname in os.listdir(indir):
 
 if data:
     data = sorted(data, key=lambda x: x[0])
-    imgs = np.stack([d[1] for d in data], axis=-1)
     tes = [d[0] for d in data]
     print("INFO: %i images found" % len(data))
     print("INFO: TEs: %s" % tes)
+    if len(data) > 2:
+        print("WARN: Using only first two echos (%f and %f)" % (tes[0], tes[1]))
+        data = data[:2]
+        tes = tes[:2]
+    imgs = np.stack([d[1] for d in data], axis=-1)
     mapper = B0(imgs, tes, affine=affine)
 
     # Extract the maps and save to Nifti
