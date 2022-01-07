@@ -1,9 +1,9 @@
 """
-Simple wrapper script for UKAT B0 mapping code
+CMORE: Simple wrapper script for UKAT B0 mapping code
 
 Intended for use in Docker container for XNAT
 
-Usage: ukat_b0.py <indir> <outdir>
+Usage: cmore_b0.py <indir> <outdir>
 """
 import os
 import sys

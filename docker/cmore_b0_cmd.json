@@ -1,8 +1,8 @@
 {
-    "name": "ukat_b0", 
-    "command-line": "python ukat_b0.py /input /output [METHOD]",
-    "image": "martincraig/ukat", 
-    "label": "ukat_b0",
+    "name": "cmore_b0", 
+    "command-line": "python cmore_b0.py /input /output [METHOD]",
+    "image": "martincraig/xnat-cmore", 
+    "label": "cmore_b0",
     "version": "0.0.1", 
     "schema-version": "1.0", 
     "info-url": "", 
@@ -12,7 +12,7 @@
     ], 
     "outputs": [
         {
-            "mount": "ukat-out", 
+            "mount": "out", 
             "required": "true", 
             "name": "b0", 
             "description": "B0 maps"
@@ -27,7 +27,7 @@
         {
             "writable": "true", 
             "path": "/output", 
-            "name": "ukat-out"
+            "name": "out"
         }
     ], 
     "xnat": [
@@ -44,7 +44,7 @@
             ], 
             "contexts": ["xnat:imageScanData"], 
             "description": "Run UKAT B0 mapping", 
-            "label": "ukat_b0", 
+            "label": "cmore_b0", 
             "output-handlers": [
                 {
                     "accepts-command-output": "b0", 
@@ -63,7 +63,7 @@
                     "description": "Input scan"
                 }
             ], 
-            "name": "ukat_b0-scan"
+            "name": "cmore_b0-scan"
         }
     ]
 }

@@ -1,8 +1,8 @@
 {
-    "name": "ukat_t2star", 
-    "command-line": "python ukat_t2star.py /input /output [METHOD]",
-    "image": "martincraig/ukat", 
-    "label": "ukat_t2star",
+    "name": "cmore_t2star", 
+    "command-line": "python cmore_t2star.py /input /output [METHOD]",
+    "image": "martincraig/xnat-cmore", 
+    "label": "cmore_t2star",
     "version": "0.0.1", 
     "schema-version": "1.0", 
     "info-url": "", 
@@ -20,7 +20,7 @@
     ], 
     "outputs": [
         {
-            "mount": "ukat-out", 
+            "mount": "out", 
             "required": "true", 
             "name": "t2star", 
             "description": "T2* map"
@@ -35,7 +35,7 @@
         {
             "writable": "true", 
             "path": "/output", 
-            "name": "ukat-out"
+            "name": "out"
         }
     ], 
     "xnat": [
@@ -52,7 +52,7 @@
             ], 
             "contexts": ["xnat:imageScanData"], 
             "description": "Run UKAT T2* mapping", 
-            "label": "ukat_t2star", 
+            "label": "cmore_t2star", 
             "output-handlers": [
                 {
                     "accepts-command-output": "t2star", 
@@ -71,7 +71,7 @@
                     "description": "Input scan"
                 }
             ], 
-            "name": "ukat_t2star-scan"
+            "name": "cmore_t2star-scan"
         }
     ]
 }

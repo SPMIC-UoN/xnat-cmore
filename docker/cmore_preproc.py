@@ -1,9 +1,9 @@
 """
-Simple wrapper script for UKAT B0 mapping code
+CMORE: Runs dcm2niix, B0 and T2* mapping code on a scan
 
 Intended for use in Docker container for XNAT
 
-Usage: ukat_b0.py <indir> <outdir>
+Usage: cmore_preproc.py <indir> <outdir> [dcm2niix_flags] [T2* method]
 """
 import os
 import sys
@@ -11,9 +11,6 @@ import sys
 import numpy as np
 import nibabel as nib
 import json
-
-from ukat.data import fetch
-from ukat.mapping.b0 import B0
 
 indir = sys.argv[1]
 outdir = sys.argv[2]
@@ -43,13 +40,13 @@ os.system(cmd)
 os.makedirs("%s/t2star_in" % outdir)
 os.system("cp %s/nifti/*T2star* %s/t2star_in" % (outdir, outdir))
 os.makedirs("%s/t2star" % outdir)
-cmd = "python ukat_t2star.py %s/t2star_in %s/t2star %s" % (outdir, outdir, t2star_method)
+cmd = "python cmore_t2star.py %s/t2star_in %s/t2star %s" % (outdir, outdir, t2star_method)
 print(cmd)
 os.system(cmd)
 
 # Generate B0 map if we have relevant data
 os.makedirs("%s/b0map" % outdir)
-cmd = "python ukat_b0.py %s/t2star_in %s/b0map" % (outdir, outdir)
+cmd = "python cmore_b0.py %s/t2star_in %s/b0map" % (outdir, outdir)
 print(cmd)
 os.system(cmd)
 

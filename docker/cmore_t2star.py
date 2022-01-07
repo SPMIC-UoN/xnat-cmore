@@ -1,9 +1,9 @@
 """
-Simple wrapper script for UKAT T2star mapping code
+CMORE: Simple wrapper script for UKAT T2star mapping code
 
 Intended for use in Docker container for XNAT
 
-Usage: ukat_t2star.py <indir> <outdir> <method>
+Usage: cmore_t2star.py <indir> <outdir> <method>
 """
 import os
 import sys

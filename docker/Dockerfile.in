@@ -15,8 +15,8 @@ RUN cd /tmp && \
 
 RUN pip install ukat
 
-ADD ukat_t2star.py .
-ADD ukat_b0.py .
+ADD cmore_t2star.py .
+ADD cmore_b0.py .
 ADD cmore_preproc.py .
 
 
