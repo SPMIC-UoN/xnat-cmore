@@ -1,6 +1,6 @@
 {
     "name": "cmore-preproc", 
-    "command-line": "python cmore_preproc.py /input /output [METHOD]",
+    "command-line": "python cmore_preproc.py /input /output \"[DCM2NIIX_FLAGS]\" [METHOD]",
     "image": "martincraig/cmore", 
     "label": "cmore",
     "version": "0.0.1", 
@@ -9,6 +9,14 @@
     "type": "docker", 
     "description": "Runs preprocessing on a CMORE session",
     "inputs": [
+        {
+            "name": "dcm2niix-flags",
+            "replacement-key": "[DCM2NIIX_FLAGS]",
+            "required": false,
+            "type": "string",
+            "default-value": "-m n -f %n_%p_%q -z y",
+            "description": "Flags for DCM2NIIX"
+        },
         {
             "name": "t2star-method",
             "replacement-key": "[METHOD]",
@@ -36,6 +44,7 @@
         {
             "name": "nifti", 
             "mount": "cmore-out",
+            "path" : "nifti",
             "glob" : "*.nii.gz",
             "required": "true", 
             "description": "NIFTI images"
@@ -55,25 +64,19 @@
     ], 
     "xnat": [
         {
-            "name": "cmore-session",
-            "contexts": [""],
+            "name": "cmore-preproc",
+            "contexts": ["xnat:imageScanData"],
             "description": "Run CMORE preprocessing", 
-            "label": "cmore_session", 
+            "label": "cmore-preproc", 
             "external-inputs": [
                 {
-                    "name": "session", 
-                    "type": "Session", 
+                    "name": "scan", 
+                    "type": "Scan", 
                     "required": true, 
-                    "description": "Input session"
+                    "description": "Input scan"
                 }
             ],
             "derived-inputs": [
-                {
-                    "name": "scan",  
-                    "type": "Scan",
-                    "derived-from-wrapper-input": "session",
-                    "description": "Input scan"
-                },
                 {
                     "name": "scan-dicoms",
                     "type": "Resource",
