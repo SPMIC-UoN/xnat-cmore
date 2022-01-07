@@ -29,7 +29,9 @@ def is_mag_fname(fname):
 
 indir = sys.argv[1]
 outdir = sys.argv[2]
-method = sys.argv[3]
+methods = [sys.argv[3]]
+if methods == ["all"]:
+    methods = ["loglin", "2p_exp"]
 
 # Load input data
 print("Loading from %s" % indir)
@@ -85,12 +87,10 @@ if data:
     tes = [d[0] for d in data]
     print("INFO: %i images found" % len(data))
     print("INFO: TEs: %s" % tes)
-    mapper_loglin = T2Star(imgs, tes, affine=affine, method=method)
-    # Extract the T2* map from the object
-    t2star_loglin = mapper_loglin.t2star_map
-
-    # Save output maps to Nifti
-    mapper_loglin.to_nifti(output_directory=outdir, maps=['m0', 't2star'], base_file_name=fprefix)
+    for method in methods:
+        mapper = T2Star(imgs, tes, affine=affine, method=method)
+        mapper.to_nifti(output_directory=outdir, maps=['m0', 't2star'], 
+                        base_file_name=fprefix + "_" + method)
 else:
     print("WARNING: No data found - no T2* map will be generated")
 
