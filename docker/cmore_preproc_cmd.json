@@ -22,8 +22,8 @@
             "replacement-key": "[METHOD]",
             "required": false,
             "type": "string",
-            "default-value": "loglin",
-            "description": "Method for calculating T2* - loglin or 2p_exp"
+            "default-value": "all",
+            "description": "Method for calculating T2* - loglin or 2p_exp or all"
         }
     ],
     "outputs": [
