@@ -11,6 +11,7 @@ import sys
 import numpy as np
 import nibabel as nib
 import json
+import scipy
 
 from ukat.data import fetch
 from ukat.mapping.t2star import T2Star
@@ -81,12 +82,21 @@ for fname in os.listdir(indir):
         else:
             print("WARNING: Found Nifti file %s without corresponding JSON - ignoring" % fname)
 
+STD_SHAPE = [288, 288]
+
 if data:
     data = sorted(data)
-    imgs = np.stack([d[1] for d in data], axis=-1)
+    imgs = [d[1] for d in data]
     tes = [d[0] for d in data]
     print("INFO: %i images found" % len(data))
     print("INFO: TEs: %s" % tes)
+    data_shape = list(imgs[0].shape)[:2]
+    if data_shape != STD_SHAPE:
+        print("INFO: T2* data has shape: %s - resampling to standard shape %s" % (data_shape, STD_SHAPE))
+        zoom_factors = [float(STD_SHAPE[d]) / data_shape[d] for d in range(2)] + [1.0] * (imgs[0].ndim - 2)
+        imgs = [scipy.ndimage.zoom(i, zoom_factors) for i in imgs]
+    imgs = np.stack(imgs, axis=-1)
+
     for method in methods:
         mapper = T2Star(imgs, tes, affine=affine, method=method)
         mapper.to_nifti(output_directory=outdir, maps=['m0', 't2star'], 
