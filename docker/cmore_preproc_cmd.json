@@ -1,6 +1,6 @@
 {
     "name": "cmore-preproc", 
-    "command-line": "python cmore_preproc.py /input /output \"[DCM2NIIX_FLAGS]\" [METHOD]",
+    "command-line": "python cmore_preproc.py --indir /input --outdir /output --dcm2niix-args \"[DCM2NIIX_FLAGS]\" --t2star-method [METHOD]",
     "image": "martincraig/cmore", 
     "label": "cmore",
     "version": "0.0.1", 

@@ -35,7 +35,7 @@ if methods == ["all"]:
     methods = ["loglin", "2p_exp"]
 
 # Load input data
-print("Loading from %s" % indir)
+print(" - Loading from %s" % indir)
 data = []
 affine = None
 fprefix = None
@@ -50,7 +50,7 @@ for fname in os.listdir(indir):
             phase_info_in_fname = True
 
 if phase_info_in_fname:
-    print("INFO: Phase information is embedded in filename")
+    print(" - Phase information is embedded in filename")
 
 for fname in os.listdir(indir):
     if fname.endswith(".nii") or fname.endswith(".nii.gz"):
@@ -63,15 +63,15 @@ for fname in os.listdir(indir):
             image = nii.get_fdata()
             te = metadata.get("EchoTime", None)
             if image.ndim > 3 and image.shape[3] > 1:
-                print("WARNING: Image %s is 4D - ignoring" % fname)
+                print(" - WARNING: Image %s is 4D - ignoring" % fname)
             elif te is None:
-                print("WARNING: Image %s has no EchoTime defined in metadata - ignoring" % fname)
+                print(" - WARNING: Image %s has no EchoTime defined in metadata - ignoring" % fname)
             elif not phase_info_in_fname and "PHASE" in metadata.get("ImageType", []):
-                print("INFO: Image %s is not magnitude - ignoring" % fname)
+                print(" - Image %s is not magnitude - ignoring" % fname)
             elif phase_info_in_fname and base_fname.endswith("_ph"):
-                print("INFO: Image %s is not magnitude - ignoring" % fname)
+                print(" - Image %s is not magnitude - ignoring" % fname)
             else:
-                print("Processing %s" % fname)
+                print(" - Processing %s" % fname)
                 data.append((te*1000, image))
                 if affine is None:
                     affine = nii.header.get_best_affine()
@@ -80,7 +80,7 @@ for fname in os.listdir(indir):
                 else:
                     fprefix = os.path.commonprefix([fprefix, base_fname])
         else:
-            print("WARNING: Found Nifti file %s without corresponding JSON - ignoring" % fname)
+            print(" - WARNING: Found Nifti file %s without corresponding JSON - ignoring" % fname)
 
 STD_SHAPE = [288, 288]
 
@@ -88,13 +88,13 @@ if data:
     data = sorted(data)
     imgs = [d[1] for d in data]
     tes = [d[0] for d in data]
-    print("INFO: %i images found" % len(data))
-    print("INFO: TEs: %s" % tes)
+    print(" - %i images found" % len(data))
+    print(" - TEs: %s" % tes)
     data_shape = list(imgs[0].shape)[:2]
-    if data_shape != STD_SHAPE:
-        print("INFO: T2* data has shape: %s - resampling to standard shape %s" % (data_shape, STD_SHAPE))
-        zoom_factors = [float(STD_SHAPE[d]) / data_shape[d] for d in range(2)] + [1.0] * (imgs[0].ndim - 2)
-        imgs = [scipy.ndimage.zoom(i, zoom_factors) for i in imgs]
+    #if data_shape != STD_SHAPE:
+    #    print("INFO: T2* data has shape: %s - resampling to standard shape %s" % (data_shape, STD_SHAPE))
+    #    zoom_factors = [float(STD_SHAPE[d]) / data_shape[d] for d in range(2)] + [1.0] * (imgs[0].ndim - 2)
+    #    imgs = [scipy.ndimage.zoom(i, zoom_factors) for i in imgs]
     imgs = np.stack(imgs, axis=-1)
 
     for method in methods:
@@ -102,8 +102,9 @@ if data:
         mapper.to_nifti(output_directory=outdir, maps=['m0', 't2star'], 
                         base_file_name=fprefix + "_" + method)
 else:
-    print("WARNING: No data found - no T2* map will be generated")
+    print(" - WARNING: No data found - no T2* map will be generated")
 
-print("DONE")
-print("%s" % os.listdir(outdir))
+for fname in os.listdir(outdir):
+    print(" - %s" % fname)
+print(" - DONE")
 

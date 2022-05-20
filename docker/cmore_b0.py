@@ -19,7 +19,7 @@ indir = sys.argv[1]
 outdir = sys.argv[2]
 
 # Load input data
-print("Loading from %s" % indir)
+print(" - Loading from %s" % indir)
 data = []
 affine = None
 fprefix = None
@@ -34,7 +34,7 @@ for fname in os.listdir(indir):
             phase_info_in_fname = True
 
 if phase_info_in_fname:
-    print("INFO: Phase information is embedded in filename")
+    print(" - Phase information is embedded in filename")
 
 for fname in os.listdir(indir):
     if fname.endswith(".nii") or fname.endswith(".nii.gz"):
@@ -47,15 +47,15 @@ for fname in os.listdir(indir):
             image = nii.get_fdata()
             te = metadata.get("EchoTime", None)
             if image.ndim > 3 and image.shape[3] > 1:
-                print("WARNING: Image %s is 4D - ignoring" % fname)
+                print(" - WARNING: Image %s is 4D - ignoring" % fname)
             elif te is None:
-                print("WARNING: Image %s has no EchoTime defined in metadata - ignoring" % fname)
+                print(" - WARNING: Image %s has no EchoTime defined in metadata - ignoring" % fname)
             elif not phase_info_in_fname and "PHASE" not in metadata.get("ImageType", []):
-                print("INFO: Image %s is not phase  - ignoring" % fname)
+                print(" - Image %s is not phase  - ignoring" % fname)
             elif phase_info_in_fname and not base_fname.endswith("_ph"):
-                print("INFO: Image %s is not phase - ignoring" % fname)
+                print(" - Image %s is not phase - ignoring" % fname)
             else:
-                print("Processing %s" % fname)
+                print(" - Processing %s" % fname)
                 data.append((te*1000, image))
                 if affine is None:
                     affine = nii.header.get_best_affine()
@@ -64,15 +64,15 @@ for fname in os.listdir(indir):
                 else:
                     fprefix = os.path.commonprefix([fprefix, base_fname])
         else:
-            print("WARNING: Found Nifti file %s without corresponding JSON - ignoring" % fname)
+            print(" - WARNING: Found Nifti file %s without corresponding JSON - ignoring" % fname)
 
 if data:
     data = sorted(data, key=lambda x: x[0])
     tes = [d[0] for d in data]
-    print("INFO: %i images found" % len(data))
-    print("INFO: TEs: %s" % tes)
+    print(" - %i images found" % len(data))
+    print(" - TEs: %s" % tes)
     if len(data) > 2:
-        print("WARN: Using only first two echos (%f and %f)" % (tes[0], tes[1]))
+        print(" - WARNING: Using only first two echos (%f and %f)" % (tes[0], tes[1]))
         data = data[:2]
         tes = tes[:2]
     imgs = np.stack([d[1] for d in data], axis=-1)
@@ -87,8 +87,8 @@ if data:
     # Save output maps to Nifti
     mapper.to_nifti(output_directory=outdir, maps=['phase0', 'phase1', 'phase_difference', 'b0_map'], base_file_name=fprefix)
 else:
-    print("WARNING: No data found - no B0s map will be generated")
+    print(" - WARNING: No data found - no B0s map will be generated")
 
-print("DONE")
-print("%s" % os.listdir(outdir))
-
+for fname in os.listdir(outdir):
+    print(" - %s" % fname)
+print(" - DONE")
