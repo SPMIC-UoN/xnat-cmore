@@ -14,7 +14,6 @@ class ArgumentParser(argparse.ArgumentParser):
         self.add_argument("--dcm2niix-args", help="Options to use when doing DICOM->NIFTI conversion", default="-m n -f %n_%p_%q -z y")
         self.add_argument("--t2star-method", help="Method to use when doing T2* processing", choices=["loglin", "2p_exp", "all"], default="all")
         self.add_argument("--t2star-matcher", help="Match substring to identify files for T2* processing", default="T2star")
-        self.add_argument("--b0map-matcher", help="Match substring to identify files for B0 processing", default="")
 
 arg_parser = ArgumentParser()
 options = arg_parser.parse_args()
@@ -25,7 +24,6 @@ print("Producing output in %s" % options.outdir)
 print("Input files:")
 for fname in os.listdir(options.indir):
     print(fname)
-
 
 print("\nDoing NIFTI conversion")
 niftidir = os.path.join(options.outdir, "nifti")
