@@ -14,6 +14,7 @@ class ArgumentParser(argparse.ArgumentParser):
         self.add_argument("--dcm2niix-args", help="Options to use when doing DICOM->NIFTI conversion", default="-m n -f %n_%p_%q -z y")
         self.add_argument("--t2star-method", help="Method to use when doing T2* processing", choices=["loglin", "2p_exp", "all"], default="all")
         self.add_argument("--t2star-matcher", help="Match substring to identify files for T2* processing", default="T2star")
+        self.add_argument("--t2w-matcher", help="Match substring to identify files for T2w processing", default="T2map")
 
 arg_parser = ArgumentParser()
 options = arg_parser.parse_args()
@@ -49,8 +50,18 @@ cmd = "python cmore_b0.py %s %s" % (t2star_indir, b0map_outdir)
 print(cmd)
 os.system(cmd)
 
+print("\nGenerating TKV if T2w data available")
+t2w_indir = os.path.join(options.outdir, "t2w_in")
+tkv_outdir = os.path.join(options.outdir, "tkv")
+os.makedirs(t2w_indir, exist_ok=True, mode=0o777)
+os.makedirs(tkv_outdir, exist_ok=True, mode=0o777)
+os.system("cp %s/*%s* %s" % (niftidir, options.t2w_matcher, t2w_indir))
+cmd = "python cmore_tkv.py %s %s" % (t2w_indir, tkv_outdir)
+print(cmd)
+os.system(cmd)
+
 # Make sure we don't upload empty resource catalogs for irrelevant outputs
-for subdir in (t2star_outdir, b0map_outdir):
+for subdir in (t2star_outdir, b0map_outdir, tkv_outdir):
     if not os.listdir(subdir):
         os.rmdir(subdir)
 
