@@ -13,7 +13,7 @@ RUN cd /tmp && \
 	cmake -DBATCH_VERSION=ON -DUSE_OPENJPEG=ON .. && \
 	make && make install
 
-RUN pip install ukat
+RUN pip install ukat>=0.6.0
 
 ADD cmore_t2star.py .
 ADD cmore_b0.py .
