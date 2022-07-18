@@ -1,6 +1,6 @@
 {
     "name": "cmore-preproc", 
-    "command-line": "python cmore_preproc.py --indir /input --outdir /output --dcm2niix-args \"[DCM2NIIX_FLAGS]\" --t2star-method [METHOD] --t2star-matcher=[MATCHER] --project [PROJECT_ID] --subject [SUBJECT_ID] --session [SESSION_ID]",
+    "command-line": "python cmore_preproc.py --indir /input --outdir /output --dcm2niix-args \"[DCM2NIIX_FLAGS]\" --t2star-method [METHOD] --t2star-matcher=[MATCHER] --t2-matcher=[T2MATCHER] --project [PROJECT_ID] --subject [SUBJECT_ID] --session [SESSION_ID]",
     "image": "martincraig/cmore", 
     "label": "cmore",
     "version": "0.0.1", 
@@ -53,6 +53,14 @@
             "type": "string",
             "default-value": "T2star",
             "description": "Substring used to identify T2* files"
+        },
+        {
+            "name": "t2-matcher",
+            "replacement-key": "[T2MATCHER]",
+            "required": false,
+            "type": "string",
+            "default-value": "T2map",
+            "description": "Substring used to identify T2w files"
         }
     ],
     "outputs": [
@@ -69,6 +77,13 @@
             "path" : "b0map",
             "required": "false", 
             "description": "B0 map"
+        },
+        {
+            "name": "tkv", 
+            "mount": "cmore-out",
+            "path" : "tkv",
+            "required": "false", 
+            "description": "TKV segmentation"
         },
         {
             "name": "nifti", 
@@ -187,6 +202,13 @@
                     "accepts-command-output": "b0map", 
                     "type": "Resource", 
                     "label": "B0MAP",
+                    "as-a-child-of-wrapper-input": "scan"
+                },
+                {
+                    "name": "tkv-resource",
+                    "accepts-command-output": "tkv", 
+                    "type": "Resource", 
+                    "label": "TKV",
                     "as-a-child-of-wrapper-input": "scan"
                 }
             ]
