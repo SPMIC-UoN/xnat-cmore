@@ -44,16 +44,18 @@ for fname in os.listdir(indir):
 
         segmentation.to_nifti(output_directory=outdir, base_file_name=base_fname, maps=['mask', 'left', 'right', 'individual'])
         volumes = segmentation.get_volumes()
-        print(f" - Setting volumes on {host} = {volumes}")
+        print(f" - Setting volumes = {volumes}")
         data = {}
         for k, v in volumes.items():
-            data = {f"xnat:experimentData/fields/field[name=kv_{k}]/field" : str(v)}
+            data[f"xnat:experimentData/fields/field[name=kv_{k}]/field"] = str(v)
         host, user, password = os.environ["XNAT_HOST"], os.environ["XNAT_USER"], os.environ["XNAT_PASS"]
+        os.environ["CURL_CA_BUNDLE"] = "" # Hack to disable CA verification
         #host = host.replace("http://", "https://") # FIXME hack
-        r = requests.put("%s/data/projects/%s/subjects/%s/experiments/%s" % (host, project, subject, session), data=data, auth=(user, password))
+        r = requests.put("%s/data/projects/%s/subjects/%s/experiments/%s" % (host, project, subject, session), data=data, auth=(user, password), verify=False)
         if r.status_code != 200:
             raise RuntimeError(f"Failed to set kidney volume custom variables: {r.text}")
 
 for fname in os.listdir(outdir):
     print(" - %s" % fname)
 print(" - DONE")
+
