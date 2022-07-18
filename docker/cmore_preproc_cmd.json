@@ -1,6 +1,6 @@
 {
     "name": "cmore-preproc", 
-    "command-line": "python cmore_preproc.py --indir /input --outdir /output --dcm2niix-args \"[DCM2NIIX_FLAGS]\" --t2star-method [METHOD] --t2star-matcher=[MATCHER]",
+    "command-line": "python cmore_preproc.py --indir /input --outdir /output --dcm2niix-args \"[DCM2NIIX_FLAGS]\" --t2star-method [METHOD] --t2star-matcher=[MATCHER] --t2-matcher=[T2MATCHER]",
     "image": "martincraig/cmore", 
     "label": "cmore",
     "version": "0.0.1", 
@@ -32,6 +32,14 @@
             "type": "string",
             "default-value": "T2star",
             "description": "Substring used to identify T2* files"
+        },
+        {
+            "name": "t2-matcher",
+            "replacement-key": "[T2MATCHER]",
+            "required": false,
+            "type": "string",
+            "default-value": "T2map",
+            "description": "Substring used to identify T2w files"
         }
     ],
     "outputs": [
