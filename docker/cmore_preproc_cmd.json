@@ -1,6 +1,6 @@
 {
     "name": "cmore-preproc", 
-    "command-line": "python cmore_preproc.py --indir /input --outdir /output --dcm2niix-args \"[DCM2NIIX_FLAGS]\" --t2star-method [METHOD] --t2star-matcher=[MATCHER]",
+    "command-line": "python cmore_preproc.py --indir /input --outdir /output --dcm2niix-args \"[DCM2NIIX_FLAGS]\" --t2star-method [METHOD] --t2star-matcher=[MATCHER] --project [PROJECT_ID] --subject [SUBJECT_ID] --session [SESSION_ID]",
     "image": "martincraig/cmore", 
     "label": "cmore",
     "version": "0.0.1", 
@@ -9,6 +9,27 @@
     "type": "docker", 
     "description": "Runs preprocessing on a CMORE session",
     "inputs": [
+        {
+            "name": "session-id",
+            "description": "",
+            "type": "string",
+            "required": true,
+            "replacement-key": "[SESSION_ID]"
+        },
+        {
+            "name": "subject-id",
+            "description": "",
+            "type": "string",
+            "required": true,
+            "replacement-key": "[SUBJECT_ID]"
+        },
+        {
+            "name": "project-id",
+            "description": "",
+            "type": "string",
+            "required": true,
+            "replacement-key": "[PROJECT_ID]"
+        },
         {
             "name": "dcm2niix-flags",
             "replacement-key": "[DCM2NIIX_FLAGS]",
@@ -81,7 +102,8 @@
                     "name": "scan", 
                     "type": "Scan", 
                     "required": true, 
-                    "description": "Input scan"
+                    "description": "Input scan",
+                    "load-children": true
                 }
             ],
             "derived-inputs": [
@@ -92,6 +114,57 @@
                     "matcher": "@.label == 'DICOM'", 
                     "provides-files-for-command-mount": "dicom-in", 
                     "description": "The DICOM resource on the scan"
+                },
+                {
+                    "name": "session",
+                    "type": "Session",
+                    "required": true,
+                    "user-settable": false,
+                    "load-children": false,
+                    "derived-from-wrapper-input": "scan"
+                },
+                {
+                    "name": "session-id",
+                    "type": "string",
+                    "required": true,
+                    "load-children": true,
+                    "derived-from-wrapper-input": "session",
+                    "derived-from-xnat-object-property": "id",
+                    "provides-value-for-command-input": "session-id"
+                },
+                {
+                    "name": "subject",
+                    "type": "Subject",
+                    "required": true,
+                    "user-settable": false,
+                    "load-children": true,
+                    "derived-from-wrapper-input": "session"
+                },
+                {
+                    "name": "subject-id",
+                    "type": "string",
+                    "required": true,
+                    "load-children": true,
+                    "derived-from-wrapper-input": "subject",
+                    "derived-from-xnat-object-property": "id",
+                    "provides-value-for-command-input": "subject-id"
+                },
+                {
+                    "name": "project",
+                    "type": "Project",
+                    "required": true,
+                    "user-settable": false,
+                    "load-children": true,
+                    "derived-from-wrapper-input": "session"
+                },
+                {
+                    "name": "project-id",
+                    "type": "string",
+                    "required": true,
+                    "load-children": true,
+                    "derived-from-wrapper-input": "project",
+                    "derived-from-xnat-object-property": "id",
+                    "provides-value-for-command-input": "project-id"
                 }
             ], 
             "output-handlers": [

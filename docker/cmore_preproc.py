@@ -15,6 +15,9 @@ class ArgumentParser(argparse.ArgumentParser):
         self.add_argument("--t2star-method", help="Method to use when doing T2* processing", choices=["loglin", "2p_exp", "all"], default="all")
         self.add_argument("--t2star-matcher", help="Match substring to identify files for T2* processing", default="T2star")
         self.add_argument("--t2w-matcher", help="Match substring to identify files for T2w processing", default="T2map")
+        self.add_argument("--project", help="Project ID")
+        self.add_argument("--subject", help="Subject ID")
+        self.add_argument("--session", help="Session ID")
 
 arg_parser = ArgumentParser()
 options = arg_parser.parse_args()
@@ -56,7 +59,7 @@ tkv_outdir = os.path.join(options.outdir, "tkv")
 os.makedirs(t2w_indir, exist_ok=True, mode=0o777)
 os.makedirs(tkv_outdir, exist_ok=True, mode=0o777)
 os.system("cp %s/*%s* %s" % (niftidir, options.t2w_matcher, t2w_indir))
-cmd = "python cmore_tkv.py %s %s" % (t2w_indir, tkv_outdir)
+cmd = "python cmore_tkv.py %s %s %s %s %s" % (t2w_indir, tkv_outdir, options.project, options.subject, options.session)
 print(cmd)
 os.system(cmd)
 
