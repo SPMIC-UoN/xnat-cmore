@@ -91,10 +91,10 @@ if data:
     print(" - %i images found" % len(data))
     print(" - TEs: %s" % tes)
     data_shape = list(imgs[0].shape)[:2]
-    #if data_shape != STD_SHAPE:
-    #    print("INFO: T2* data has shape: %s - resampling to standard shape %s" % (data_shape, STD_SHAPE))
-    #    zoom_factors = [float(STD_SHAPE[d]) / data_shape[d] for d in range(2)] + [1.0] * (imgs[0].ndim - 2)
-    #    imgs = [scipy.ndimage.zoom(i, zoom_factors) for i in imgs]
+    if data_shape != STD_SHAPE:
+        print("INFO: T2* data has shape: %s - resampling to standard shape %s" % (data_shape, STD_SHAPE))
+        zoom_factors = [float(STD_SHAPE[d]) / data_shape[d] for d in range(2)] + [1.0] * (imgs[0].ndim - 2)
+        imgs = [scipy.ndimage.zoom(i, zoom_factors) for i in imgs]
     imgs = np.stack(imgs, axis=-1)
 
     for method in methods:
