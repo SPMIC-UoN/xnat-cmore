@@ -5,6 +5,12 @@ Intended for use in Docker container for XNAT
 """
 import argparse
 import os
+import shutil
+
+def get_files(indir, outdir, matcher):
+    for fname in os.listdir(indir):
+        if matcher.lower() in fname.lower():
+            shutil.copy(os.path.join(indir, fname), outdir)
 
 class ArgumentParser(argparse.ArgumentParser):
     def __init__(self, **kwargs):
@@ -41,7 +47,7 @@ t2star_indir = os.path.join(options.outdir, "t2star_in")
 t2star_outdir = os.path.join(options.outdir, "t2star")
 os.makedirs(t2star_indir, exist_ok=True, mode=0o777)
 os.makedirs(t2star_outdir, exist_ok=True, mode=0o777)
-os.system("cp %s/*%s* %s" % (niftidir, options.t2star_matcher, t2star_indir))
+get_files(niftidir, t2star_indir, options.t2star_matcher)
 cmd = "python cmore_t2star.py %s %s %s" % (t2star_indir, t2star_outdir, options.t2star_method)
 print(cmd)
 os.system(cmd)
@@ -58,7 +64,7 @@ t2w_indir = os.path.join(options.outdir, "t2w_in")
 tkv_outdir = os.path.join(options.outdir, "tkv")
 os.makedirs(t2w_indir, exist_ok=True, mode=0o777)
 os.makedirs(tkv_outdir, exist_ok=True, mode=0o777)
-os.system("cp %s/*%s* %s" % (niftidir, options.t2_matcher, t2w_indir))
+get_files(niftidir, t2w_indir, options.t2_matcher)
 cmd = "python cmore_tkv.py %s %s %s %s %s" % (t2w_indir, tkv_outdir, options.project, options.subject, options.session)
 print(cmd)
 os.system(cmd)
