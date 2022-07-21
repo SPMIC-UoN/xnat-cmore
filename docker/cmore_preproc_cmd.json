@@ -59,7 +59,7 @@
             "replacement-key": "[T2MATCHER]",
             "required": false,
             "type": "string",
-            "default-value": "T2map",
+            "default-value": "T2W",
             "description": "Substring used to identify T2w files"
         }
     ],
