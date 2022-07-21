@@ -85,7 +85,7 @@ for fname in os.listdir(indir):
 STD_SHAPE = [288, 288]
 
 if data:
-    data = sorted(data)
+    data = sorted(data, key=lambda x: x[0])
     imgs = [d[1] for d in data]
     tes = [d[0] for d in data]
     print(" - %i images found" % len(data))
@@ -95,6 +95,13 @@ if data:
         print("INFO: T2* data has shape: %s - resampling to standard shape %s" % (data_shape, STD_SHAPE))
         zoom_factors = [float(STD_SHAPE[d]) / data_shape[d] for d in range(2)] + [1.0] * (imgs[0].ndim - 2)
         imgs = [scipy.ndimage.zoom(i, zoom_factors) for i in imgs]
+        # Need to scale affine by same amount so FOV is unchanged. Note that this means the corner
+        # voxels will have the same co-ordinates in original and rescaled data. The FOV depicted
+        # in fsleyes etc will be slightly smaller because the voxels are smaller and the co-ordinates
+        # are defined as being the centre of the voxel
+        for idx in range(2):
+            affine[:, idx] = affine[:, idx] / zoom_factors[idx]
+
     imgs = np.stack(imgs, axis=-1)
 
     for method in methods:
