@@ -106,7 +106,7 @@ if data:
 
     for method in methods:
         mapper = T2Star(imgs, tes, affine=affine, method=method)
-        mapper.to_nifti(output_directory=outdir, maps=['m0', 't2star'], 
+        mapper.to_nifti(output_directory=outdir, maps=['m0', 't2star', 'r2star'],
                         base_file_name=fprefix + "_" + method)
 else:
     print(" - WARNING: No data found - no T2* map will be generated")
